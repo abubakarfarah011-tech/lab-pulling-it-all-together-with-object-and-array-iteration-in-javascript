@@ -1,5 +1,6 @@
-function gameObject() {
-    return {
+ //Game Data Function
+  function gameObject() {
+    return{
         home: {
             teamName: "Brooklyn Nets",
             colors: ["Black", "White"],
@@ -53,8 +54,8 @@ function gameObject() {
                     steals: 4,
                     blocks: 11,
                     slamDunks: 1,
-                },
-            },
+                }
+            }
         },
         away: {
             teamName: "Charlotte Hornets",
@@ -109,8 +110,113 @@ function gameObject() {
                     steals: 22,
                     blocks: 5,
                     slamDunks: 12,
-                },
-            },
-        },
+                }
+            }
+        }
     };
+  }
+
+// Helper to get all players together
+function allPlayers() {
+  const game = gameObject();
+  return { ...game.home.players, ...game.away.players };
+}
+
+// 1. Player Info
+function numPointsScored(playerName) {
+  return allPlayers()[playerName].points;
+}
+
+function shoeSize(playerName) {
+  return allPlayers()[playerName].shoe;
+}
+
+// 2. Team Info
+function teamColors(teamName) {
+  const game = gameObject();
+  for (let side in game) {
+    if (game[side].teamName === teamName) return game[side].colors;
+  }
+}
+
+function teamNames() {
+  const game = gameObject();
+  return [game.home.teamName, game.away.teamName];
+}
+
+// 3. Player Numbers + Stats
+function playerNumbers(teamName) {
+  const game = gameObject();
+  for (let side in game) {
+    if (game[side].teamName === teamName) {
+      return Object.values(game[side].players).map(p => p.number);
+    }
+  }
+}
+
+function playerStats(playerName) {
+  return allPlayers()[playerName];
+}
+
+// 4. Advanced Challenge
+function bigShoeRebounds() {
+  let biggestShoe = 0;
+  let rebounds = 0;
+
+  for (let name in allPlayers()) {
+    const player = allPlayers()[name];
+    if (player.shoe > biggestShoe) {
+      biggestShoe = player.shoe;
+      rebounds = player.rebounds;
+    }
+  }
+  return rebounds;
+}
+
+// More challenges
+function mostPointsScored() {
+  let maxPoints = 0;
+  let topPlayer = "";
+
+  for (let name in allPlayers()) {
+    if (allPlayers()[name].points > maxPoints) {
+      maxPoints = allPlayers()[name].points;
+      topPlayer = name;
+    }
+  }
+  return topPlayer;
+}
+
+function winningTeam() {
+  const game = gameObject();
+  let homePoints = 0;
+  let awayPoints = 0;
+
+  for (let p in game.home.players) homePoints += game.home.players[p].points;
+  for (let p in game.away.players) awayPoints += game.away.players[p].points;
+
+  return homePoints > awayPoints ? game.home.teamName : game.away.teamName;
+}
+
+function playerWithLongestName() {
+  let longest = "";
+  for (let name in allPlayers()) {
+    if (name.length > longest.length) longest = name;
+  }
+  return longest;
+}
+
+function doesLongNameStealATon() {
+  const longest = playerWithLongestName();
+  let maxSteals = 0;
+  let playerWithMostSteals = "";
+
+  for (let name in allPlayers()) {
+    if (allPlayers()[name].steals > maxSteals) {
+      maxSteals = allPlayers()[name].steals;
+      playerWithMostSteals = name;
+    }
+  }
+
+  return longest === playerWithMostSteals;
 }
