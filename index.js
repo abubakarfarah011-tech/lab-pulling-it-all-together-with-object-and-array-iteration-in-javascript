@@ -116,13 +116,16 @@
     };
   }
 
-// Helper to get all players together
+
+// Helper to get all players
 function allPlayers() {
-  const game = gameObject();
-  return { ...game.home.players, ...game.away.players };
+  var game = gameObject();
+  return Object.assign({}, game.home.players, game.away.players);
 }
 
-// 1. Player Info
+// --------------------
+// Player Functions
+// --------------------
 function numPointsScored(playerName) {
   return allPlayers()[playerName].points;
 }
@@ -131,56 +134,59 @@ function shoeSize(playerName) {
   return allPlayers()[playerName].shoe;
 }
 
-// 2. Team Info
+function playerStats(playerName) {
+  return allPlayers()[playerName];
+}
+
+// --------------------
+// Team Functions
+// --------------------
 function teamColors(teamName) {
-  const game = gameObject();
-  for (let side in game) {
+  var game = gameObject();
+  for (var side in game) {
     if (game[side].teamName === teamName) return game[side].colors;
   }
 }
 
 function teamNames() {
-  const game = gameObject();
+  var game = gameObject();
   return [game.home.teamName, game.away.teamName];
 }
 
-// 3. Player Numbers + Stats
 function playerNumbers(teamName) {
-  const game = gameObject();
-  for (let side in game) {
+  var game = gameObject();
+  for (var side in game) {
     if (game[side].teamName === teamName) {
-      return Object.values(game[side].players).map(p => p.number);
+      return Object.keys(game[side].players).map(function(player) {
+        return game[side].players[player].number;
+      });
     }
   }
 }
 
-function playerStats(playerName) {
-  return allPlayers()[playerName];
-}
-
-// 4. Advanced Challenge
+// --------------------
+// Advanced Functions
+// --------------------
 function bigShoeRebounds() {
-  let biggestShoe = 0;
-  let rebounds = 0;
-
-  for (let name in allPlayers()) {
-    const player = allPlayers()[name];
-    if (player.shoe > biggestShoe) {
-      biggestShoe = player.shoe;
-      rebounds = player.rebounds;
+  var players = allPlayers();
+  var biggest = 0;
+  var rebounds = 0;
+  for (var name in players) {
+    if (players[name].shoe > biggest) {
+      biggest = players[name].shoe;
+      rebounds = players[name].rebounds;
     }
   }
   return rebounds;
 }
 
-// More challenges
 function mostPointsScored() {
-  let maxPoints = 0;
-  let topPlayer = "";
-
-  for (let name in allPlayers()) {
-    if (allPlayers()[name].points > maxPoints) {
-      maxPoints = allPlayers()[name].points;
+  var players = allPlayers();
+  var maxPoints = 0;
+  var topPlayer = "";
+  for (var name in players) {
+    if (players[name].points > maxPoints) {
+      maxPoints = players[name].points;
       topPlayer = name;
     }
   }
@@ -188,35 +194,37 @@ function mostPointsScored() {
 }
 
 function winningTeam() {
-  const game = gameObject();
-  let homePoints = 0;
-  let awayPoints = 0;
+  var game = gameObject();
+  var homePoints = 0;
+  var awayPoints = 0;
 
-  for (let p in game.home.players) homePoints += game.home.players[p].points;
-  for (let p in game.away.players) awayPoints += game.away.players[p].points;
+  for (var p in game.home.players) homePoints += game.home.players[p].points;
+  for (var p in game.away.players) awayPoints += game.away.players[p].points;
 
   return homePoints > awayPoints ? game.home.teamName : game.away.teamName;
 }
 
 function playerWithLongestName() {
-  let longest = "";
-  for (let name in allPlayers()) {
+  var players = allPlayers();
+  var longest = "";
+  for (var name in players) {
     if (name.length > longest.length) longest = name;
   }
   return longest;
 }
 
 function doesLongNameStealATon() {
-  const longest = playerWithLongestName();
-  let maxSteals = 0;
-  let playerWithMostSteals = "";
+  var players = allPlayers();
+  var longest = playerWithLongestName();
+  var maxSteals = 0;
+  var playerMostSteals = "";
 
-  for (let name in allPlayers()) {
-    if (allPlayers()[name].steals > maxSteals) {
-      maxSteals = allPlayers()[name].steals;
-      playerWithMostSteals = name;
+  for (var name in players) {
+    if (players[name].steals > maxSteals) {
+      maxSteals = players[name].steals;
+      playerMostSteals = name;
     }
   }
 
-  return longest === playerWithMostSteals;
+  return longest === playerMostSteals;
 }
